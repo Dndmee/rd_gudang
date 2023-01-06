@@ -82,7 +82,8 @@ ESX.RegisterServerCallback('rd_gudang:getPropertyInventory', function(source, cb
 end)
 
 
-RegisterServerEvent('gudang:registerstash', function(id)
-	exports.ox_inventory:RegisterStash(id, "Gudang", 200, 5000000, true)
+RegisterServerEvent('gudang:registerstash', function(data)
+	print(json.encode(data))
+	exports.ox_inventory:RegisterStash(data.id, data.nama, 200, data.kapasitas, true)
 end)
 

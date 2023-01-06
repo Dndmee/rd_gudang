@@ -19,7 +19,7 @@ client_scripts {
 }
 
 server_scripts {
-	'@ssid-dependencies/async.lua', -- ini diganti sama folder Async mu yaa
+	'@async/async.lua', -- ini diganti sama folder Async mu yaa
 	'@oxmysql/lib/MySQL.lua',
     'server/*.lua',
 }
