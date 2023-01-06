@@ -37,7 +37,7 @@ function LockerMenu(k, hasLocker, lockerName)
         })
 
 		table.insert(elements, {
-            label = 'Berhenti Rental Gudang', 
+            header = 'Berhenti Rental Gudang', 
             params = {
                 event = "rd-berhentiSewaGudang",
                 args = {
@@ -50,7 +50,7 @@ function LockerMenu(k, hasLocker, lockerName)
 	
 	if not hasLocker then
 		table.insert(elements, {
-            label = 'Sewa Gudang',
+            header = 'Sewa Gudang',
             txt = 'Biaya Sewa Awal: $'.. ESX.Math.GroupDigits(RD.InitialRentPrice)"<br>Biaya Bulanan: $".. ESX.Math.GroupDigits(RD.DailyRentPrice),
             params = {
                 event = "rd-sewaGudang",
