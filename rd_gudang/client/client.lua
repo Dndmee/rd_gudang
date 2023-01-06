@@ -15,8 +15,8 @@ Citizen.CreateThread(function()
 	
 end)
 
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)
+RNE('esx:setJob')
+RNE('esx:setJob', function(job)
     ESX.PlayerData.job = job
 end)
 
@@ -24,98 +24,64 @@ function LockerMenu(k, hasLocker, lockerName)
 	local elements = {}
 	
 	if hasLocker then
-		table.insert(elements, {label = 'Buka Locker', value = 'open_locker'})
-		table.insert(elements, {label = 'Berhenti Rental Locker', value = 'stop_renting'})
+		table.insert(elements, {
+            header = 'Buka Gudang', 
+            params = {
+                event = "rd-openLocker"
+                args = {
+                    lokasi = k,
+                    gudang = hasLocker,
+                    namaGudang = lockerName
+                }
+            }
+        })
+
+		table.insert(elements, {
+            label = 'Berhenti Rental Gudang', 
+            params = {
+                event = "rd-berhentiSewaGudang",
+                args = {
+                    lokasi = k,
+                    namaGudang = lockerName
+                }
+            }
+            value = 'stop_renting'})
 	end
 	
 	if not hasLocker then
-		table.insert(elements, {label = 'Sewa | Biaya Sewa Awal: <span style="color: green;">$' .. ESX.Math.GroupDigits(RD.InitialRentPrice) .. '</span> | Biaya Bulanan - <span style="color: green;">$' .. ESX.Math.GroupDigits(RD.DailyRentPrice) .. '</span>', value = 'start_locker'})
-	end
-	
-	ESX.UI.Menu.CloseAll()
-	
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'locker_menu', {
-		title    = lockerName,
-		align    = 'right',
-		elements = elements
-	}, function(data, menu)
-
-		if data.current.value == 'start_locker' then
-			ConfirmLockerRent(k, lockerName)
-			menu.close()
-		elseif data.current.value == 'stop_renting' then
-			StopLockerRent(k, lockerName)
-			menu.close()
-		elseif data.current.value == 'open_locker' then
-			ESX.Streaming.RequestAnimDict('anim@heists@keycard@', function()
-				TaskPlayAnim( PlayerPedId(), "anim@heists@keycard@", "exit", 8.0, 1.0, -1, 16, 0, 0, 0, 0 )
-				TriggerServerEvent("InteractSound_SV:PlayOnSource", "stashopen", 0.6)
-				Citizen.Wait(500)
-				ClearPedTasksImmediately(playerPed)
-			end)
-			Openstashopen(k, playerIdent, lockerName)
-			menu.close()
-		end
-
-	end, function(data, menu)
-		menu.close()
-	end)
+		table.insert(elements, {
+            label = 'Sewa Gudang',
+            txt = 'Biaya Sewa Awal: $'.. ESX.Math.GroupDigits(RD.InitialRentPrice)"<br>Biaya Bulanan: $".. ESX.Math.GroupDigits(RD.DailyRentPrice),
+            params = {
+                event = "rd-sewaGudang",
+                args = {
+                    lokasi = k,
+                    namaGudang = lockerName
+                }
+            }
+        })
+    end
+    exports['qb-menu']:openMenu(elements)
 
 end
 
-function ConfirmLockerRent(k, lockerName)
+RNE("rd-sewaGudang", function(data)
+    TriggerServerEvent('rd_gudang:startRentingLocker', data.lokasi, data.namaGudang)
+end)
 
-    local elements = {
-        {label = 'Yes', value = 'buy_yes'},
-        {label = 'No', value = 'buy_no'}
-    }
+RNE("rd-openLocker", function(data)
+    ESX.Streaming.RequestAnimDict('anim@heists@keycard@', function()
+        TaskPlayAnim( PlayerPedId(), "anim@heists@keycard@", "exit", 8.0, 1.0, -1, 16, 0, 0, 0, 0 )
+        TriggerServerEvent("InteractSound_SV:PlayOnSource", "stashopen", 0.6)
+        Citizen.Wait(500)
+        ClearPedTasksImmediately(PlayerPedId())
+    end)
+    Openstashopen(data.lokasi, data.gudang, data.namaGudang)
+end)
 
-    ESX.UI.Menu.CloseAll()
-
-    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'confirm_rent_locker', {
-        title    = 'Apakah kamu ingin menyewa ' .. lockerName .. '',
-        align    = 'right',
-        elements = elements
-    }, function(data, menu)
-
-        if data.current.value == 'buy_yes' then
-            menu.close()
-			TriggerServerEvent('rd_gudang:startRentingLocker', k, lockerName)
-        elseif data.current.value == 'buy_no' then
-            menu.close()
-        end
-
-    end, function(data, menu)
-        menu.close()
-    end)  
-end
-
-function StopLockerRent(k, lockerName)
-
-    local elements = {
-        {label = 'Iya', value = 'buy_yes'},
-        {label = 'Tidak', value = 'buy_no'}
-    }
-
-    ESX.UI.Menu.CloseAll()
-
-    ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'cancel_rent_locker', {
-        title    = 'Apakah kamu ingin berhenti menyewa ' .. lockerName .. '',
-        align    = 'right',
-        elements = elements
-    }, function(data, menu)
-
-        if data.current.value == 'buy_yes' then
-            menu.close()
-			TriggerServerEvent('rd_gudang:stopRentingLocker', k, lockerName)
-        elseif data.current.value == 'buy_no' then
-            menu.close()
-        end
-
-    end, function(data, menu)
-        menu.close()
-    end)  
-end
+RNE("rd-berhentiSewaGudang", function(data)
+    TriggerServerEvent('rd_gudang:stopRentingLocker', data.lokasi, data.namaGudang)
+end)
 
 function Openstashopen(lockerId, identifier, lockerName)
     local owner = ESX.GetPlayerData().identifier
@@ -137,46 +103,27 @@ function LoadAnimDict(dict)
     end
 end
 
-RegisterNetEvent('rd_gudang:gudangkota')
-AddEventHandler('rd_gudang:gudangkota', function ()
+RNE('rd_gudang:gudangkota')
+AEH('rd_gudang:gudangkota', function ()
 	ESX.TriggerServerCallback('rd_gudang:checkLocker', function(checkLocker)
 		LockerMenu('locker1', checkLocker, 'Gudang Kota')
 	end, 'locker1')
 end)
 
-RegisterNetEvent('rd_gudang:gudangss')
-AddEventHandler('rd_gudang:gudangss', function ()
+RNE('rd_gudang:gudangss')
+AEH('rd_gudang:gudangss', function ()
 	ESX.TriggerServerCallback('rd_gudang:checkLocker', function(checkLocker)
 		LockerMenu('locker3', checkLocker, 'Gudang Sandy Shores')
 	end, 'locker3')
 end)
 
-RegisterNetEvent('rd_gudang:gudangpaleto')
-AddEventHandler('rd_gudang:gudangpaleto', function ()
+RNE('rd_gudang:gudangpaleto')
+AEH('rd_gudang:gudangpaleto', function ()
 	ESX.TriggerServerCallback('rd_gudang:checkLocker', function(checkLocker)
 		LockerMenu('locker2', checkLocker, 'Gudang Paleto')
 	end, 'locker2')
 end)
 
---[[TARGET FUNCTION]]-- 
--- contoh function kalau pake ox_target
-
--- exports.ox_target:addSphereZone({
---     coords = vec3(x, y, z),
---     radius = 1,
---     debug = drawZones,
---     options = {
---         {
---             name = 'sphere',
---             event = 'NAMAEVENT',
---             icon = 'fa-solid fa-circle',
---             label = '(Debug) Sphere',
---             canInteract = function(entity, distance, coords, name) -- ini kalau ada fungsi tambahan
---                 return true
---             end
---         }
---     }
--- })
 
 Citizen.CreateThread(function()
 	exports.qtarget:AddBoxZone("gudangkota", vector3(-1607.59, -830.55, 10.08), 3, 1, {
@@ -220,7 +167,7 @@ end)
 
 
 
-AddEventHandler('onResourceStart', function(resource)
+AEH('onResourceStart', function(resource)
     if resource == GetCurrentResourceName() then
      print("\n^1----------------------------------------------------------------------------------^7")
      print("\n CREATED BY RD DEVELOPMENT TEAM")
