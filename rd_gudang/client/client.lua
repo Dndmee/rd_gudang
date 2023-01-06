@@ -22,9 +22,17 @@ end)
 
 function LockerMenu(k, hasLocker, lockerName, kapasitas)
 	local elements = {}
+
+    elements = {
+        {    
+            header = lockerName,
+            txt = "Kamu bisa menyimpan baran-barang mu di sini.",
+            isMenuHeader = true
+        }
+    }
 	
 	if hasLocker then
-		table.insert(elements, {
+        elements[#elements+1] = {
             header = 'Buka Gudang', 
             params = {
                 event = "rd-openLocker",
@@ -35,9 +43,9 @@ function LockerMenu(k, hasLocker, lockerName, kapasitas)
                     kapasitas = kapasitas
                 }
             }
-        })
+        }
 
-		table.insert(elements, {
+		elements[#elements+1] = {
             header = 'Berhenti Rental Gudang', 
             params = {
                 event = "rd-berhentiSewaGudang",
@@ -46,14 +54,13 @@ function LockerMenu(k, hasLocker, lockerName, kapasitas)
                     namaGudang = lockerName
                 }
             }
-        })
-        exports['rd-menu']:openMenu(elements)
+        }
 	end
 	
 	if not hasLocker then
-		table.insert(elements, {
+		elements[#elements+1] = {
             header = 'Sewa Gudang',
-            txt = 'Biaya Sewa Awal: $'.. ESX.Math.GroupDigits(RD.InitialRentPrice).."<br>Biaya Bulanan: $".. ESX.Math.GroupDigits(RD.DailyRentPrice),
+            txt = 'Biaya Sewa Awal: $'.. ESX.Math.GroupDigits(RD.HargaSewa),
             params = {
                 event = "rd-sewaGudang",
                 args = {
@@ -61,10 +68,9 @@ function LockerMenu(k, hasLocker, lockerName, kapasitas)
                     namaGudang = lockerName,
                 }
             }
-        })
-        exports['rd-menu']:openMenu(elements)
+        }
     end
-
+    exports['rhid-menu']:openMenu(elements)
 end
 
 function Openstashopen(lockerId, identifier, lockerName, kapasitas)
@@ -114,7 +120,7 @@ end)
 
 Citizen.CreateThread(function()
     for k, v in pairs(RD.LokasiGudang) do 
-
+        
         local gblip = AddBlipForCoord(vec3(v.coords.x, v.coords.y, v.coords.z))
         SetBlipSprite (gblip, 357)
         SetBlipColour (gblip, 41)

@@ -1,8 +1,7 @@
 RD = {}
 
-RD.InitialRentPrice = 100000 -- Biaya Sewa Gudang
-RD.DailyRentPrice = 5000 -- Biaya sewa perhari
-
+RD.HargaSewa = 100000 -- Biaya Sewa Gudang
+RD.rentalTime = 1440 * (60 * 1000) --=== 24 hours
 
 RNE = RegisterNetEvent
 AEH = AddEventHandler
