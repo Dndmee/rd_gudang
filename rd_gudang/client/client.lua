@@ -114,6 +114,17 @@ end)
 
 Citizen.CreateThread(function()
     for k, v in pairs(RD.LokasiGudang) do 
+
+        local gblip = AddBlipForCoord(vec3(v.coords.x, v.coords.y, v.coords.z))
+        SetBlipSprite (gblip, 357)
+        SetBlipColour (gblip, 41)
+        SetBlipDisplay(gblip, 4)
+        SetBlipScale  (gblip, 0.7)
+        SetBlipAsShortRange(gblip, true)
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentString(v.label)
+        EndTextCommandSetBlipName(gblip)
+
         exports.ox_target:addBoxZone({
             coords = vec3(v.coords.x, v.coords.y, v.coords.z),
             size = vec3(1, 1, 2),
