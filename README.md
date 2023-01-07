@@ -1,12 +1,12 @@
 # Dependency
 
-**ox_inventory**(https://github.com/overextended/ox_inventory/releases)
+**[ox_inventory](https://github.com/overextended/ox_inventory/releases)**
 
-**ox_target**(https://github.com/overextended/ox_target/releases)
+**[ox_target](https://github.com/overextended/ox_target/releases)**
 
-**nh-context-edited**(https://github.com/reyyghi/nh-context)
+**[nh-context-edited](https://github.com/reyyghi/nh-context)**
 
-**mythic_notify**(https://github.com/Swqppingg/mythic_notify)
+**[mythic_notify](https://github.com/Swqppingg/mythic_notify)**
 
 # Example
 Kamu hanya perlu menambahkan kdoe ini di config.lua untuk menambahkan lokasi gudang
