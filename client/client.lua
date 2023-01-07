@@ -70,7 +70,7 @@ function LockerMenu(k, hasLocker, lockerName, kapasitas)
             }
         }
     end
-    exports['rhid-menu']:openMenu(elements)
+    exports['nh-context']:Open(elements)
 end
 
 function Openstashopen(lockerId, identifier, lockerName, kapasitas)
