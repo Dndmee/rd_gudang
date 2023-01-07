@@ -9,7 +9,7 @@
 **[mythic_notify](https://github.com/Swqppingg/mythic_notify)**
 
 # Example
-Kamu hanya perlu menambahkan kdoe ini di config.lua untuk menambahkan lokasi gudang
+Kamu hanya perlu menambahkan kode ini di config.lua untuk menambahkan lokasi gudang
 
 ```
 ['plaeto'] = {
