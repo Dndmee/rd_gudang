@@ -12,10 +12,10 @@
 Kamu hanya perlu menambahkan kode ini di config.lua untuk menambahkan lokasi gudang
 
 ```
-['plaeto'] = {
+['paleto'] = {
     coords = vec4(147.41, 6366.67, 31.53, 297),
     targetDebug = false,
-    id = "gudang_plaeto",
+    id = "gudang_paleto",
     label = "Gudang Paleto",
     stashWeight = 10000000
 }
